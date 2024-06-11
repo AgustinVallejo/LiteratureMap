@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,24 +9,26 @@
 </head>
 <body>
   <h1>Mapa de Nodos</h1>
-  <div id="3d-graph"></div>
+  <div id="3d-graph" style="width: 100vw; height: 100vh;"></div>
 
   <script>
-    // Random tree
-    const N = 300;
-    const gData = {
-      nodes: [...Array(N).keys()].map(i => ({ id: i })),
-      links: [...Array(N).keys()]
-        .filter(id => id)
-        .map(id => ({
-          source: id,
-          target: Math.round(Math.random() * (id-1))
-        }))
-    };
+    // Function to fetch the JSON file
+    async function fetchGraphData() {
+      try {
+        const response = await fetch('data/authorLinksSmaller.json');
+        const gData = await response.json();
+        console.log(gData);
+        const Graph = ForceGraph3D()
+          (document.getElementById('3d-graph'))
+            .graphData(gData)
+            
+      } catch (error) {
+        console.error('Error fetching the JSON data:', error);
+      }
+    }
 
-    const Graph = ForceGraph3D()
-      (document.getElementById('3d-graph'))
-        .graphData(gData);
+    // Call the function to fetch and load the data
+    fetchGraphData();
   </script>
 </body>
 </html>
