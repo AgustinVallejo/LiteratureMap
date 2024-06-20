@@ -202,9 +202,11 @@ templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__)))
 @app.get("/authors", response_class=HTMLResponse)
 async def read_embeddings(request: Request):
     return templates.TemplateResponse("authorToAuthor.html", {"request": request})
-#http://127.0.0.1:8000/authors Doesn't show the data
+#http://127.0.0.1:8000/authors Doesn't show the data now
 
 # python -m http.server 8000for embeddings dockerize and port as routes and service maybe
+
+# TODO Generate an iframe for the github.io hosting add comments, score and a navbar left with Carl
 
 def signal_handler(sig, frame):
     print('Shutting down gracefully')

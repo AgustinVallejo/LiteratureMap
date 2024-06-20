@@ -99,4 +99,7 @@ filname=os.path.join(directory, "stories_tensors.tsv")
 Stories_tensors.to_csv(filname, sep='\t', index=False, header=False)
 
 #50 is the max Categorical
-# Missing fixing the search by Name of the Author or by Country or Death year or Birth year
+# TODO
+# Missing filling the dataframe more. add Children category and category of how hard is it to
+# understand, also deploy this in github.io for people to explore and docs
+
