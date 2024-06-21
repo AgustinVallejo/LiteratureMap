@@ -36,6 +36,7 @@ country_mapping = {
     'Estadounidense': "Estados Unidos",  # Assuming you want to take the first year
     'Inglesa': "Inglaterra",
     'Argentino': "Argentina",
+    'Espana': "España",
     'nan':np.nan,
     "Cubano":"Cuba",
     "Puertorriqueno": "Puerto Rico",
@@ -67,23 +68,24 @@ Totals_df_labels['Death Year'] = Totals_df_labels['Death Year'].fillna(0)
 
 #rename columns
 new_column_names = {
-    'story_name': 'Story Name',
-    'reading_time_min': 'Reading Time (min)',
-    'Author': 'Author First Name',
-    'LastName': 'Author Last Name',
-    'Name': 'Full Name',
-    'country': 'Country',
-    'genera': 'Genre',
-    'Wiki_URL': 'Wikipedia URL',
-    'cats': 'Categories',
-    'linked_authors': 'Linked Authors',
-    'Birth Year': 'Year of Birth',
-    'Death Year': 'Year of Death'
+    'story_name': 'Título',
+    'reading_time_min': 'Tiempo de Lectura (min)',
+    'Author': 'Primer Nombre Autor',
+    'LastName': 'Apellido Autor',
+    'Name': 'Nombre Completo Autor',
+    'country': 'País',
+    'genera': 'Género',
+    'Wiki_URL': 'URL Wikipedia',
+    'cats': 'Categorías',
+    'linked_authors': 'Autores relacionados',
+    'Birth Year': 'Año de nacimiento',
+    'Death Year': 'Año de muerte'
 }
 
 # Rename the columns
 Totals_df_labels.rename(columns=new_column_names, inplace=True)
 
+Totals_df_labels=Totals_df_labels[["Título",'Tiempo de Lectura (min)','Primer Nombre Autor','Apellido Autor','Nombre Completo Autor','País','Género','Año de nacimiento','Año de muerte','Autores relacionados','Categorías']].copy()
 ##### Saving
 directory=os.path.join(os.path.dirname(__file__))
 filname= os.path.join(directory, "stories_metadata.tsv")
