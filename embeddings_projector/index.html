@@ -20419,7 +20419,7 @@ THE SOFTWARE.
           padding: 0 24px;
           height: 60px;
           color: white;
-          background: #560731;
+          background: #003153;
         }
 
         #appbar .logo {
@@ -20435,6 +20435,19 @@ THE SOFTWARE.
           color: white;
         }
 
+        .center-section img {
+          width: 20%;
+          /* Adjust as needed */
+          max-width: 20%;
+          /* Ensure the image doesn't exceed the bar width */
+        }
+
+        .center-section {
+          position: absolute;
+          left: 50%;
+          transform: translateX(+0%);
+        }
+
         vz-projector {
           height: calc(100% - 60px);
         }
@@ -20447,6 +20460,9 @@ THE SOFTWARE.
       <div id="container">
         <div id="appbar">
           <div>Proyector de Embeddings</div>
+          <div class="center-section">
+            <img src="Coem.png" alt="Logo">
+          </div>
           <div class="icons">
             <a title="Documentation" target="_blank" href="[[documentationLink]]">
               <paper-icon-button icon="help-outline"></paper-icon-button>
