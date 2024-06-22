@@ -113,7 +113,87 @@ new_column_names_english = {
     'Año de nacimiento':'Birth Year' ,
     'Año de muerte':'Death Year'
 }
+translation_dict_genre = {
+    'Romanticismo': 'Romanticism',
+    'Unknown': 'Unknown',
+    'Histórico': 'Historical',
+    'Rural': 'Rural',
+    'Modernismo': 'Modernism',
+    'Dramaturgia': 'Dramaturgy',
+    'Pedagógico': 'Pedagogical',
+    'Fantasía': 'Fantasy',
+    'Realismo': 'Realism',
+    'Periodismo': 'Journalism',
+    'Suspenso': 'Suspense',
+    'modernismo': 'Modernism',
+    'Comedia': 'Comedy',
+    'Ficción': 'Fiction',
+    'Historieta': 'Comic Strip',
+    'Paranoia': 'Paranoia',
+    'historias cortas': 'Short Stories',
+    'Ambiental': 'Environmental',
+    'Surrealismo': 'Surrealism',
+    'Chejov': 'Chekhov'
+}
+
+country_translation_dict = {
+    'Espana': 'Spain',
+    'Estados Unidos': 'United States',
+    'Uruguay': 'Uruguay',
+    'Cuba': 'Cuba',
+    'Grecia': 'Greece',
+    'Francia': 'France',
+    'Argentina': 'Argentina',
+    'Unknown': 'Unknown',
+    'Italia': 'Italy',
+    'India': 'India',
+    'Mexico': 'Mexico',
+    'Rusia': 'Russia',
+    'Inglaterra': 'England',
+    'África': 'Africa',
+    'Brasil': 'Brazil',
+    'Portugal': 'Portugal',
+    'Arabia': 'Arabia',
+    'Guatemala': 'Guatemala',
+    'Dinamarca': 'Denmark',
+    'Irlanda': 'Ireland',
+    'Colombia': 'Colombia',
+    'Peru': 'Peru',
+    'Alemania': 'Germany',
+    'Checoslovaquia': 'Czechoslovakia',
+    'Hungria': 'Hungary',
+    'Venezuela': 'Venezuela',
+    'Belgica': 'Belgium',
+    'Chile': 'Chile',
+    'Líbano': 'Lebanon',
+    'Noruega': 'Norway',
+    'Puerto Rico': 'Puerto Rico',
+    'Reino Unido': 'United Kingdom',
+    'Suiza': 'Switzerland',
+    'Japon': 'Japan',
+    'Polonia': 'Poland',
+    'Republica Dominicana': 'Dominican Republic',
+    'Oriente': 'East',
+    'Nicaragua': 'Nicaragua',
+    'China': 'China',
+    'Nueva Zelanda': 'New Zealand',
+    'Escocia': 'Scotland',
+    'Ecuador': 'Ecuador',
+    'Suecia': 'Sweden',
+    'Egipto': 'Egypt',
+    'El Salvador': 'El Salvador',
+    'Paraguay': 'Paraguay',
+    'Prusia': 'Prussia',
+    'Costa Rica': 'Costa Rica',
+    'Gales': 'Wales'
+}
+
+
 Totals_df_labels.rename(columns=new_column_names_english, inplace=True)
+Totals_df_labels['Genre'] = Totals_df_labels['Genre'].map(translation_dict_genre)
+Totals_df_labels['Country'] = Totals_df_labels['Country'].map(country_translation_dict)
+print(Totals_df_labels['Country'].unique())
+Totals_df_labels['Country'] = Totals_df_labels['Country'].fillna("Unknown")
 filname= os.path.join(directory, "stories_metadata_english.tsv")
 Totals_df_labels.to_csv(filname, sep='\t', index=False, header=True)
 

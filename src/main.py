@@ -1,12 +1,13 @@
 import os
+import signal
+import sys
 from datetime import datetime, timedelta, timezone
 from typing import Dict
-import sys
-import signal
 
 from fastapi import Depends, FastAPI, Form, HTTPException, Request, status
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -14,7 +15,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# In-memory database for demonstration purposes
+# In-memory database
 fake_users_db = {
     "johndoe": {
         "username": "johndoe",
@@ -204,9 +205,41 @@ async def read_embeddings(request: Request):
     return templates.TemplateResponse("authorToAuthor.html", {"request": request})
 #http://127.0.0.1:8000/authors Doesn't show the data now
 
-# python -m http.server 8000for embeddings dockerize and port as routes and service maybe
+app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 
-# TODO Generate an iframe for the github.io hosting add comments, score and a navbar left with Carl
+
+@app.get("/authorToAuthor")
+def get_author_page():
+    return FileResponse(os.path.join("static", "authorToAuthor.html"))
+
+@app.get("/authorToAuthor3D")
+def get_author_page_3D():
+    return FileResponse(os.path.join("static", "authorToAuthor3D.html"))
+
+@app.get("/StoriesEmbeddings")
+def getstory_page_3D():
+    return FileResponse(os.path.join("static", "storyEmbedding.html"))
+
+# TODO 
+# - Generate an iframe for the github.io 
+# - Separate page per Author of stories linked with YT, summary of Author, and one audio.
+# - generate the appbar
+# - Prettify everything
+# - Story Embeddings doesn't have a Json
+# ///Linked authors
+# - At the Right a search bar with authors links ranked with the most links descending at the start
+# - Search authors by Genre, country, birth year and author_link
+# - At the left An image of one of the 10 authors we have image of and the summary of them +
+# a short story narrated (and maybe its summary)
+# - Get the data of the Author selected, link to the separate page Maybe recluster based on it
+# - Button to save favorite authors
+# ///Embeddings
+# - Link of the story
+# - At the Left Carl Sagan with one story selected narrating it and description of that story
+# - At the right a search bar for stories title, Cuountry etc...
+# - Be able to select multiple storyes and add them to the user likes
+# - Link the stories By authors? and maybe by related authors ( linked ones)
+
 
 def signal_handler(sig, frame):
     print('Shutting down gracefully')
