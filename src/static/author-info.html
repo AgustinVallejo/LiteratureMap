@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="import" href="https://cdnjs.cloudflare.com/ajax/libs/polymer/1.11.3/polymer.html">
+    <style>
+        :host {
+            display: block;
+            font-family: 'Roboto', sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .info-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .info-item {
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .info-item span {
+            font-weight: bold;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <dom-module id="author-info">
+        <template>
+            <div class="info-title">Información Autor</div>
+            <div class="info-item">Nombre: <span>{{name}}</span></div>
+            <div class="info-item">Pais: <span>{{country}}</span></div>
+            <div class="info-item">Nacimiento: <span>{{birthYear}}</span></div>
+            <div class="info-item">Muerte: <span>{{deathYear}}</span></div>
+            <div class="info-item">Ejemplo cuento: <span>{{exampleStory}}</span></div>
+        </template>
+
+        <script>
+            Polymer({
+                is: 'author-info',
+                properties: {
+                    name: String,
+                    country: String,
+                    birthYear: Number,
+                    deathYear: Number,
+                    exampleStory: String
+                }
+            });
+        </script>
+    </dom-module>
+</body>
+
+</html>

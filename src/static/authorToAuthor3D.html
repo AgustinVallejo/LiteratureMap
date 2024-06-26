@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+<link rel="import" href="static/author-info.html">
+<link rel="import" href="https://cdnjs.cloudflare.com/ajax/libs/paper-elements/1.0.7/paper-elements.html">
+<link rel="import" href="https://cdnjs.cloudflare.com/ajax/libs/iron-elements/1.0.8/iron-elements.html">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.0/webcomponents-lite.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Import Webcomponents polyfill for older browsers -->
+
 
 <head>
   <meta charset="UTF-8">
@@ -43,6 +51,10 @@
       max-width: 20%;
     }
 
+    .audios {
+      display: flex;
+    }
+
     .english-link {
       display: flex;
       align-items: center;
@@ -56,10 +68,9 @@
       left: 50%;
       transform: translateX(-0%);
     }
+
     #container {
       display: flex;
-      height: calc(100vh - 60px);
-      margin-top: 60px;
       transition: margin-left 0.3s ease;
     }
 
@@ -76,7 +87,7 @@
       height: calc(100% - 60px);
       background: white;
       border-right: 1px solid #ccc;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
       display: none;
       flex-direction: column;
       align-items: center;
@@ -84,6 +95,7 @@
       padding: 20px;
       overflow-y: auto;
       z-index: 2;
+      transition: margin-left 0.3s ease;
     }
 
     #popup img {
@@ -104,24 +116,35 @@
       color: red;
       font-size: 18px;
     }
+
+    #toggle-popup-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 5px;
+      transform: translateX(+5%)
+    }
+
+    #toggle-popup-btn:hover {
+      background-color: #0056b3;
+    }
   </style>
-  </head>
-  <body>
+</head>
+
+<body>
   <div>
     <div id="appbar">
-      <div>Proyector de Embeddings</div>
+      <div>Authors links <button id="toggle-popup-btn" onclick="togglePopup();" title="Toggle Popup">Show
+          Stories</button>
+      </div>
       <div class="center-section">
         <img src="static/Coem.png" alt="Logo">
       </div>
       <div class="icons">
-        <a href="javascript:void(0);" onclick="togglePopup();" class="english-link" title="Show Popup">Show Story</a>
         <a class="english-link" title="English" target="_blank" href="https://Estevefact.github.io/english">English</a>
-        <a title="Documentation" target="_blank" href="[[documentationLink]]">
-          <paper-icon-button icon="help-outline"></paper-icon-button>
-          <paper-tooltip position="bottom" animation-delay="0" fit-to-visible-bounds>
-            Open documentation
-          </paper-tooltip>
-        </a>
         <a title="Report bug" target="_blank" href="[[bugReportLink]]">
           <paper-icon-button icon="bug-report"></paper-icon-button>
           <paper-tooltip position="bottom" animation-delay="0" fit-to-visible-bounds>
@@ -131,51 +154,60 @@
       </div>
     </div>
 
-  <script src="//unpkg.com/3d-force-graph"></script>
+    <script src="//unpkg.com/3d-force-graph"></script>
 
 
-  <div id="container">
-    <div id="3d-graph"></div>
-  </div>
+    <div id="container">
+      <div id="3d-graph"></div>
+    </div>
 
-  <div id="popup">
-    <div id="popup-close" onclick="togglePopup();">&times;</div>
-    <img src="static/preview.png" alt="Popup Image">
-    <audio controls>
-      <source src="static/ALGO_MALO_VA_A_PASAR.mp3" type="audio/mp3">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
+    <div id="popup">
+      <div id="popup-close" onclick="togglePopup();">&times;</div>
+      <img src="static/preview.png" alt="Popup Image">
+      <author-info name="Gabriel García Márquez" country="Colombia" birth-year="1900" death-year="1980"
+        example-story="Algo malo va a pasar en este pueblo">
+      </author-info>
+      <audio controls>
+        <source src="static/ALGO_MALO_VA_A_PASAR.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
 
-  <script>
-    const Graph = ForceGraph3D()
-      (document.getElementById('3d-graph'))
-      .jsonUrl('static/authorLinksSmaller.json')
-      .nodeAutoColorBy('group')
-      .nodeLabel(node => `${node.id}: ${node.country}`);
+    <script>
+      const Graph = ForceGraph3D()
+        (document.getElementById('3d-graph'))
+        .jsonUrl('static/authorLinksSmaller.json')
+        .nodeAutoColorBy('group')
+        .nodeLabel(node => `${node.id}: ${node.country}`);
       function togglePopup() {
-      var popup = document.getElementById('popup');
-      var container = document.getElementById('container');
-      var graph = document.getElementById('3d-graph');
+        var popup = document.getElementById('popup');
+        var container = document.getElementById('container');
+        var graph = document.getElementById('3d-graph');
+        var toggleLink = document.getElementById('toggle-popup-btn');
 
-      if (popup.style.display === 'none' || popup.style.display === '') {
+        if (popup.style.display === 'none' || popup.style.display === '') {
+          popup.style.display = 'flex';
+          container.style.marginLeft = '300px';
+          toggleLink.textContent = "Hide Stories"
+        } else {
+          popup.style.display = 'none';
+          container.style.marginLeft = '0';
+          toggleLink.textContent = "Show Stories"
+        }
+      }
+
+      // Ensure the popup is initially hidden
+      document.addEventListener('DOMContentLoaded', function () {
+        var popup = document.getElementById('popup');
+        var container = document.getElementById('container');
+        var graph = document.getElementById('3d-graph');
+        var toggleLink = document.getElementById('toggle-popup-btn');
+        toggleLink.textContent = "Hide Stories"
         popup.style.display = 'flex';
         container.style.marginLeft = '300px';
-        graph.style.marginLeft = '300px';
-      } else {
-        popup.style.display = 'none';
-        container.style.marginLeft = '0';
-        graph.style.marginLeft = '0';
-      }
-    }
+      });
 
-    // Ensure the popup is initially hidden
-    document.addEventListener('DOMContentLoaded', function() {
-      var popup = document.getElementById('popup');
-      popup.style.display = 'flex';
-    });
-
-  </script>
+    </script>
 </body>
 
 </html>
