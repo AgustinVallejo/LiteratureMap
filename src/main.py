@@ -212,6 +212,11 @@ app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 def get_author_page():
     return FileResponse(os.path.join("static", "authorToAuthor.html"))
 
+@app.get("/authorinfo")
+def get_author_page_info():
+    return HTMLResponse(content=open("static/author-info.html").read())
+
+
 @app.get("/authorToAuthor3D")
 def get_author_page_3D():
     return FileResponse(os.path.join("static", "authorToAuthor3D.html"))
