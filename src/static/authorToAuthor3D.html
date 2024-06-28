@@ -180,12 +180,32 @@
 
   <script src="//unpkg.com/3d-force-graph"></script>
   <script>
+
+    var autor = 'Gabriel García Márquez';
+
     const Graph = ForceGraph3D()
     // TODO missing selecting an author and untangle it, also when an author is selected Cahnge the authors fill
       (document.getElementById('3d-graph'))
       .jsonUrl('static/authorLinksSmaller.json')
       .nodeAutoColorBy('group')
-      .nodeLabel(node => `${node.id}: ${node.country}`);
+      .nodeLabel(node => `${node.id}: ${node.country}`)
+      .onNodeClick(node => {
+          // Aim at node from outside it
+          const distance = 40;
+          const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+
+          const newPos = node.x || node.y || node.z
+            ? { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }
+            : { x: 0, y: 0, z: distance }; // special case if node is in (0,0,0)
+
+          Graph.cameraPosition(
+            newPos, // new position
+            node, // lookAt ({ x, y, z })
+            3000  // ms transition duration
+          );
+          autor = node.id;
+          loadAuthorInfo()
+        });
     function togglePopup() {
       var popup = document.getElementById('popup');
       var container = document.getElementById('container');
@@ -211,7 +231,7 @@
       fetch('static/author-info.html')
         .then(response => response.text())
         .then(data => {
-          var rendered = data.replace("{{name}}", "Gabriel García Márquez")
+          var rendered = data.replace("{{name}}", autor)
             .replace("{{country}}", "Colombia")
             .replace("{{birthYear}}", "1927")
             .replace("{{deathYear}}", "2014")
