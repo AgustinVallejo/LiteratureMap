@@ -203,7 +203,7 @@
             node, // lookAt ({ x, y, z })
             3000  // ms transition duration
           );
-          autor = node.id;
+          autor = node;
           loadAuthorInfo()
         });
     function togglePopup() {
@@ -231,10 +231,10 @@
       fetch('static/author-info.html')
         .then(response => response.text())
         .then(data => {
-          var rendered = data.replace("{{name}}", autor)
-            .replace("{{country}}", "Colombia")
-            .replace("{{birthYear}}", "1927")
-            .replace("{{deathYear}}", "2014")
+          var rendered = data.replace("{{name}}", autor.id)
+            .replace("{{country}}", autor.country)
+            .replace("{{birthYear}}", autor.birth_year)
+            .replace("{{deathYear}}", autor.death_year)
             .replace("{{exampleStory}}", "\"Algo muy grave va a suceder en este pueblo\"");
           document.getElementById("author-info-container").innerHTML = rendered;
         })
