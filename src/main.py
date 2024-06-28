@@ -221,6 +221,17 @@ def get_author_page_info():
 def get_author_page_3D():
     return FileResponse(os.path.join("static", "authorToAuthor3D.html"))
 
+@app.get("/authorToAuthor3DSmall")
+def get_author_page_3D_small():
+    return FileResponse(os.path.join("static", "authorToAuthor3Dsmaller.html"))
+# TODO
+# - Make the lines thicker of the node selected
+# - Make a searchbar for authors
+# - Show the authors linked ranked by quantity on the right
+# - Add a button to go back to the start
+# - Add Metadata to Big 3D too with flexible shows too
+ 
+
 @app.get("/StoriesEmbeddings")
 def getstory_page_3D():
     return FileResponse(os.path.join("static", "storyEmbedding.html"))
