@@ -154,6 +154,21 @@
       #toggle-popup-btn:hover {
         background-color: #0056b3;
       }
+      .autocomplete-suggestions {
+      border: 1px solid #999;
+      background: #fff;
+      overflow: auto;
+      position: absolute;
+      z-index: 9999;
+      max-height: 200px;
+      }
+      .autocomplete-suggestion {
+        padding: 8px;
+        cursor: pointer;
+      }
+      .autocomplete-suggestion:hover {
+        background-color: #ddd;
+      }
     </style>
   </head>
 
@@ -188,6 +203,10 @@
     </div>
 
     <div id="popup">
+      <div>
+        <input type="text" id="author-search" placeholder="Search for an author...">
+        <div id="autocomplete-container"></div>
+      </div>
       <div id="author-info-container">></div>
       <button id="follow-author-btn">Follow Author</button>
     </div>
@@ -353,6 +372,35 @@
 
         // Add click event listener to the button
         changeAuthorBtn.addEventListener('click', followAuthor);
+        // Implementing the search bar with autosuggest
+        const searchInput = document.getElementById('author-search');
+        const autocompleteContainer = document.getElementById('autocomplete-container');
+
+        searchInput.addEventListener('input', function () {
+          const query = this.value.toLowerCase();
+          autocompleteContainer.innerHTML = '';
+          if (query.length === 0) return;
+
+          const suggestions = gData.nodes.filter(node =>
+            node.id.toLowerCase().includes(query) ||
+            (node.country && node.country.toLowerCase().includes(query))
+          );
+
+          suggestions.forEach(node => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.classList.add('autocomplete-suggestion');
+            suggestionItem.textContent = `${node.id} (${node.country})`;
+            suggestionItem.addEventListener('click', () => {
+              searchInput.value = node.id;
+              autocompleteContainer.innerHTML = '';
+              autor = node;
+              loadAuthorInfo(node);
+              highlightNodeAndLinks(node);
+              followAuthor();
+            });
+            autocompleteContainer.appendChild(suggestionItem);
+          });
+        });
       });
 
     </script>
