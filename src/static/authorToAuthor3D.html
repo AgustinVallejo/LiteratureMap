@@ -3,7 +3,7 @@
   <meta charset="UTF-8" />
   <!-- Import Webcomponents polyfill for older browsers -->
   <link rel="icon" type="image/png" href="static/favicon.png" />
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -154,6 +154,92 @@
       #toggle-popup-btn:hover {
         background-color: #0056b3;
       }
+      #search-container {
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding-top: 5px;
+      }
+      .autocomplete-suggestions {
+      border: 1px solid #999;
+      background: #fff;
+      overflow: auto;
+      position: absolute;
+      z-index: 9999;
+      max-height: 200px;
+      width: calc(100% - 60px); /* Adjust for the dropdown and icon width */
+      }
+      .autocomplete-suggestion {
+        padding: 8px;
+        cursor: pointer;
+      }
+      .autocomplete-suggestion:hover {
+        background-color: #ddd;
+      }
+        #author-search {
+        width: 100%;
+        padding: 8px;
+        border-radius: 15px;
+        border: 1px solid #ccc;
+        padding-left: 30px; /* To make space for the magnifying glass icon */
+      }
+      #search-icon {
+        position: absolute;
+        right: 10px;
+        pointer-events: none;
+      }
+      .dropdown {
+      position: relative;
+      display: inline-block;
+      margin-right: 0px;
+      }
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+      }
+      .dropdown-content span {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+      }
+      .dropdown-content span:hover {
+        background-color: #ddd;
+      }
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+      .dropdown:hover .dropbtn {
+        background-color: #3e8e41;
+      }
+      .dropbtn {
+        font-family: "Roboto", sans-serif;
+        background-color: #4CAF50;
+        color: white;
+        padding: 4px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 15px;
+      }
+      #top-authors-container {
+      margin-top: 20px;
+      width: 50%; /* Adjust as needed */
+      max-width: 800px; /* Adjust as needed */
+      }
+      #top-authors-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      #top-authors-list li {
+        padding: 8px;
+        border-bottom: 1px solid #ccc;
+      }
     </style>
   </head>
 
@@ -188,7 +274,26 @@
     </div>
 
     <div id="popup">
+      <div id="search-container">
+        <div class="dropdown">
+          <button class="dropbtn" id="filter-button" > Filter by Name</button>
+          <div class="dropdown-content">
+            <span data-filter="id">Name</span>
+            <span data-filter="country">Country</span>
+            <span data-filter="birth_year">Birth Year</span>
+            <span data-filter="death_year">Death Year</span>
+            <span data-filter="genre">Genre</span>
+          </div>
+        </div>
+        <input type="text" id="author-search" placeholder="Search for an author...">
+        <i id="search-icon" class="fas fa-search"></i> 
+        <div id="autocomplete-container"></div>
+      </div>
       <div id="author-info-container">></div>
+      <div id="top-authors-container">
+        <h3>Top 5 Linked Authors</h3>
+        <ul id="top-authors-list"></ul>
+      </div>
       <button id="follow-author-btn">Follow Author</button>
     </div>
 
@@ -219,7 +324,7 @@
       }
       function loadAuthorInfo( autor ) {
         if ( !autor ) { return }
-        fetch("static/author-info.html")
+        fetch("static/author-info_smaller.html")
           .then((response) => response.text())
           .then((data) => {
             var rendered = data
@@ -227,12 +332,15 @@
               .replace("{{country}}", autor.country)
               .replace("{{birthYear}}", autor.birth_year)
               .replace("{{deathYear}}", autor.death_year)
+              .replace("{{Genre}}", autor.genre)
               .replace(
                 "{{exampleStory}}",
-                '"Algo muy grave va a suceder en este pueblo"'
+                autor.story_name
               );
             document.getElementById("author-info-container").innerHTML =
               rendered;
+            document.getElementById("popup-image").src = `/static/${autor.image}`;
+            document.getElementById("popup-audio").src = `/static/${autor.audio}`;
           })
           .catch((error) => console.error("Error loading the box:", error));
       }
@@ -250,7 +358,7 @@
 
       async function fetchJSON() {
         try {
-          const response = await fetch("static/authorLinksSmaller.json");
+          const response = await fetch("static/authorLinksSmaller_new.json");
           const gData = await response.json();
           return gData;
         } catch (error) {
@@ -350,6 +458,70 @@
 
         // Add click event listener to the button
         changeAuthorBtn.addEventListener('click', followAuthor);
+        // Implementing the search bar with autosuggest
+        const searchInput = document.getElementById('author-search');
+        const autocompleteContainer = document.getElementById('autocomplete-container');
+        const filterOptions = document.querySelectorAll('.dropdown-content span');
+        const filterButton = document.getElementById('filter-button');
+        let selectedFilter = 'id';
+
+        filterOptions.forEach(option => {
+          option.addEventListener('click', function () {
+            selectedFilter = this.dataset.filter;
+            const filterText = this.textContent;
+            filterButton.textContent = `Filter by ${filterText}`;
+            searchInput.placeholder = `Search by ${selectedFilter.replace('_', ' ')}...`;
+          });
+        });
+
+        searchInput.addEventListener('input', function () {
+          const query = this.value.toLowerCase();
+          autocompleteContainer.innerHTML = '';
+          if (query.length === 0) return;
+
+          const suggestions = gData.nodes.filter(node =>
+            (node[selectedFilter] && node[selectedFilter].toString().toLowerCase().includes(query))
+          );
+
+          suggestions.forEach(node => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.classList.add('autocomplete-suggestion');
+            const filterValue = node[selectedFilter] || '';
+            if (selectedFilter === 'id') {
+              suggestionText = `${node.id}`;
+            } else {
+              const filterValue = node[selectedFilter] || '';
+              suggestionText = `${node.id} (${filterValue})`;
+            }
+            suggestionItem.textContent = suggestionText;
+            suggestionItem.addEventListener('click', () => {
+              searchInput.value = node.id;
+              autocompleteContainer.innerHTML = '';
+              autor = node;
+              loadAuthorInfo(node);
+              highlightNodeAndLinks(node);
+              followAuthor();
+            });
+            autocompleteContainer.appendChild(suggestionItem);
+          });
+        });
+        function updateTopAuthors(node) {
+          const topAuthorsList = document.getElementById('top-authors-list');
+          topAuthorsList.innerHTML = '';
+
+          const neighbors = node.neighbors.map(neighbor => ({
+            ...neighbor,
+            linkCount: neighbor.neighbor.linked_authors
+          }));
+
+          const topAuthors = neighbors.sort((a, b) => b.linkCount - a.linkCount).slice(0, 5);
+
+          topAuthors.forEach(author => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${author.id} (${author.linkCount} links)`;
+            topAuthorsList.appendChild(listItem);
+          });
+        }
       });
 
     </script>
