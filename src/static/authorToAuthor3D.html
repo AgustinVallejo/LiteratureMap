@@ -470,7 +470,13 @@
             const suggestionItem = document.createElement('div');
             suggestionItem.classList.add('autocomplete-suggestion');
             const filterValue = node[selectedFilter] || '';
-            suggestionItem.textContent = `${node.id} (${filterValue})`;
+            if (selectedFilter === 'id') {
+              suggestionText = `${node.id}`;
+            } else {
+              const filterValue = node[selectedFilter] || '';
+              suggestionText = `${node.id} (${filterValue})`;
+            }
+            suggestionItem.textContent = suggestionText;
             suggestionItem.addEventListener('click', () => {
               searchInput.value = node.id;
               autocompleteContainer.innerHTML = '';
