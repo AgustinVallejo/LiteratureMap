@@ -219,7 +219,7 @@
       }
       function loadAuthorInfo( autor ) {
         if ( !autor ) { return }
-        fetch("static/author-info.html")
+        fetch("static/author-info_smaller.html")
           .then((response) => response.text())
           .then((data) => {
             var rendered = data
@@ -227,12 +227,15 @@
               .replace("{{country}}", autor.country)
               .replace("{{birthYear}}", autor.birth_year)
               .replace("{{deathYear}}", autor.death_year)
+              .replace("{{Genre}}", autor.genre)
               .replace(
                 "{{exampleStory}}",
-                '"Algo muy grave va a suceder en este pueblo"'
+                autor.story_name
               );
             document.getElementById("author-info-container").innerHTML =
               rendered;
+            document.getElementById("popup-image").src = `/static/${autor.image}`;
+            document.getElementById("popup-audio").src = `/static/${autor.audio}`;
           })
           .catch((error) => console.error("Error loading the box:", error));
       }
@@ -250,7 +253,7 @@
 
       async function fetchJSON() {
         try {
-          const response = await fetch("static/authorLinksSmaller.json");
+          const response = await fetch("static/authorLinksSmaller_new.json");
           const gData = await response.json();
           return gData;
         } catch (error) {
