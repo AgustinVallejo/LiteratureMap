@@ -227,6 +227,19 @@
         cursor: pointer;
         border-radius: 15px;
       }
+      #top-authors-container {
+      margin-top: 20px;
+      width: 50%; /* Adjust as needed */
+      max-width: 800px; /* Adjust as needed */
+      }
+      #top-authors-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      #top-authors-list li {
+        padding: 8px;
+        border-bottom: 1px solid #ccc;
+      }
     </style>
   </head>
 
@@ -277,6 +290,10 @@
         <div id="autocomplete-container"></div>
       </div>
       <div id="author-info-container">></div>
+      <div id="top-authors-container">
+        <h3>Top 5 Linked Authors</h3>
+        <ul id="top-authors-list"></ul>
+      </div>
       <button id="follow-author-btn">Follow Author</button>
     </div>
 
@@ -488,6 +505,23 @@
             autocompleteContainer.appendChild(suggestionItem);
           });
         });
+        function updateTopAuthors(node) {
+          const topAuthorsList = document.getElementById('top-authors-list');
+          topAuthorsList.innerHTML = '';
+
+          const neighbors = node.neighbors.map(neighbor => ({
+            ...neighbor,
+            linkCount: neighbor.neighbor.linked_authors
+          }));
+
+          const topAuthors = neighbors.sort((a, b) => b.linkCount - a.linkCount).slice(0, 5);
+
+          topAuthors.forEach(author => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${author.id} (${author.linkCount} links)`;
+            topAuthorsList.appendChild(listItem);
+          });
+        }
       });
 
     </script>

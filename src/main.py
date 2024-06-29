@@ -225,9 +225,10 @@ def get_author_page_3D():
 def get_author_page_3D_small():
     return FileResponse(os.path.join("static", "authorToAuthor3Dsmaller.html"))
 # TODO
-# - Make a searchbar for authors
 # - Show the authors linked ranked by quantity on the left below the author summary
 # - Add a button to go back to the start
+# - copy the ToAuthor but with small dataset
+# - Add everything to github.io
  
 
 @app.get("/StoriesEmbeddings")
