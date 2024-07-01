@@ -6,46 +6,85 @@
   <title>Particle Drawing</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
   <script>
-    let points = []; // Array de puntos que representa las líneas de la imagen
-    let particles = []; // Array de partículas
-    let img; // Imagen a cargar
+    let points = []; // Array of points representing the lines in the image
+    let particles = []; // Array of particles
+    let img; // Image to load
+
+    let drawingArea = {
+      minX: 0,
+      maxX: 500,
+      minY: 0,
+      maxY: 500
+    }
+
+    let scale = 0.5;
 
     function preload() {
       // Cargar la imagen
-      img = loadImage('../data/images/benedetti.png');
+      autores = [
+        '../data/images/asuncion silva.png',
+        '../data/images/benedetti.png',
+        '../data/images/bukowski.png',
+        '../data/images/cortazar.png',
+        '../data/images/monterroso.png',
+        '../data/images/poe.png',
+        '../data/images/quiroga.png',
+        '../data/images/rulfo.png',
+        '../data/images/saramago.png'
+      ]
+
+      // Pick a random author
+      autor = autores[ Math.floor(Math.random() * autores.length) ];
+
+      img = loadImage(autor);
     }
 
     function setup() {
-      createCanvas(800, 800);
+      createCanvas(500, 500);
       img.loadPixels();
-      // Obtener los puntos negros de la imagen
+      // Get the black points from the image
       for (let y = 0; y < img.height; y++) {
         for (let x = 0; x < img.width; x++) {
           let index = (x + y * img.width) * 4;
           let r = img.pixels[index];
           let g = img.pixels[index + 1];
           let b = img.pixels[index + 2];
-          if (r < 50 && g < 50 && b < 50) { // Ajustar el umbral según sea necesario
+          if (r < 50 && g < 50 && b < 50) { // Adjust the threshold as needed
             points.push(createVector(x, y));
           }
         }
       }
-      // Inicializar partículas
+      // Initialize particles
       for (let i = 0; i < 100; i++) {
-        particles.push(new Particle(random(width), random(height)));
+        particles.push(new Particle(
+          random(drawingArea.minX,drawingArea.maxX),
+          random(drawingArea.minY,drawingArea.maxY)
+          ));
       }
     }
 
     function draw() {
-      background(255);
+      // Display the real image on the left
+      // image(img, 0, 0, 500, 500);
+
+      // Display the drawing process on the right
       for (let particle of particles) {
-        particle.follow(points);
         particle.update();
         particle.show();
       }
+
+      if ( particles.length < 5000 ) {
+        // Add new particles to the simulation
+        for (let i = 0; i < 100; i++) {
+          particles.push(new Particle(
+            random(drawingArea.minX,drawingArea.maxX),
+            random(drawingArea.minY,drawingArea.maxY)
+            ));
+        }
+      } 
     }
 
-    // Clase Partícula
+    // Particle class
     class Particle {
       constructor(x, y) {
         this.pos = createVector(x, y);
@@ -54,43 +93,52 @@
         this.maxSpeed = 2;
       }
 
-      follow(points) {
-        let closest = null;
-        let record = Infinity;
-        points.shuffle;
-        for (let pt of points) {
-          let d = dist(this.pos.x, this.pos.y, pt.x, pt.y);
-          if (d < record) {
-            record = d;
-            closest = pt;
-          }
-        }
-        if (closest != null) {
-          let desired = p5.Vector.sub(closest, this.pos);
-          desired.setMag(this.maxSpeed);
-          let steer = p5.Vector.sub(desired, this.vel);
-          steer.limit(0.1);
-          this.applyForce(steer);
-        }
-      }
-
-      applyForce(force) {
-        this.acc.add(force);
-      }
-
       update() {
-        this.vel.add(this.acc);
         this.pos.add(this.vel);
-        this.acc.mult(0);
+
+        const randAngle = -PI/5;
+        this.vel.rotate(random(-randAngle, randAngle));
+
+        if ( this.vel.mag() > this.maxSpeed ) {
+          this.vel.setMag(this.maxSpeed);
+        }
+
+        // Wrap arount the bounds of the drawing area (500-1000,0-500)
+        if (this.pos.x > drawingArea.maxX) {
+          this.pos.x = drawingArea.minX;
+        } else if (this.pos.x < drawingArea.minX) {
+          this.pos.x = drawingArea.maxX;
+        }
+        if (this.pos.y > drawingArea.maxY) {
+          this.pos.y = drawingArea.minY;
+        } else if (this.pos.y < drawingArea.minY) {
+          this.pos.y = drawingArea.maxY;
+        }
       }
 
       show() {
-        // Obtener el color del píxel en la posición actual de la partícula
-        let col = img.get(floor(this.pos.x), floor(this.pos.y));
+        // Get the color of the pixel at the current position of the particle
+        let col = this.getColor();
         stroke(col);
         strokeWeight(1);
         point(this.pos.x, this.pos.y);
       }
+
+      getColor(dx=0,dy=0) {
+        return img.get(floor(this.pos.x + dx - drawingArea.minX)/scale, floor(this.pos.y + dy)/scale);
+      }
+
+      getColorMatrix(){
+        let matrix = [];
+        for (let i = 0; i < 3; i++) {
+          matrix[i] = [];
+          for (let j = 0; j < 3; j++) {
+            matrix[i][j] = this.getColor(i-1,j-1)[0];
+          }
+        }
+        return matrix;
+      }
+
     }
   </script>
 </head>
