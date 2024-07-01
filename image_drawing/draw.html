@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Particle Drawing</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <script src="https://unpkg.com/p5.createloop@0.3.1/dist/p5.createloop.js"></script>
+
   <script>
-    let points = []; // Array of points representing the lines in the image
     let particles = []; // Array of particles
     let img; // Image to load
 
@@ -18,42 +19,35 @@
     }
 
     let scale = 0.5;
+    let autor = '';
 
     function preload() {
       // Cargar la imagen
       autores = [
-        '../data/images/asuncion silva.png',
-        '../data/images/benedetti.png',
-        '../data/images/bukowski.png',
-        '../data/images/cortazar.png',
-        '../data/images/monterroso.png',
-        '../data/images/poe.png',
-        '../data/images/quiroga.png',
-        '../data/images/rulfo.png',
-        '../data/images/saramago.png'
+        // 'chejov', // TODO These three have a different scale!! 0.3
+        // 'gabo',
+        // 'sagan',
+        'asuncion silva',
+        'benedetti',
+        'bukowski',
+        'cortazar',
+        'monterroso',
+        'poe',
+        'quiroga',
+        'rulfo',
+        'saramago'
       ]
 
       // Pick a random author
       autor = autores[ Math.floor(Math.random() * autores.length) ];
+      // autor = autores[ 0 ]
 
-      img = loadImage(autor);
+      img = loadImage(`../data/images/${autor}.png`);
     }
 
     function setup() {
       createCanvas(500, 500);
       img.loadPixels();
-      // Get the black points from the image
-      for (let y = 0; y < img.height; y++) {
-        for (let x = 0; x < img.width; x++) {
-          let index = (x + y * img.width) * 4;
-          let r = img.pixels[index];
-          let g = img.pixels[index + 1];
-          let b = img.pixels[index + 2];
-          if (r < 50 && g < 50 && b < 50) { // Adjust the threshold as needed
-            points.push(createVector(x, y));
-          }
-        }
-      }
       // Initialize particles
       for (let i = 0; i < 100; i++) {
         particles.push(new Particle(
@@ -61,6 +55,14 @@
           random(drawingArea.minY,drawingArea.maxY)
           ));
       }
+
+      background(255);
+
+      // This is to create a gif
+      // It will count 7 seconds and append the downloadable img under the sketch
+      // frameRate(30)
+      // createLoop({duration:7, gif:true})
+      // console.log(autor)
     }
 
     function draw() {
