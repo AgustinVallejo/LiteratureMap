@@ -152,11 +152,11 @@
         cursor: pointer;
         font-size: 14px;
         border-radius: 5px;
-        transform: translateX(-60%);
+        transform: translateX(-30%);
         transition: margin-left 0.3s ease;
       }
 
-      #Stories-Authors-btn {
+      #Stories-Authors-btn:hover {
         background-color: #0056b3;
       }
 
@@ -168,7 +168,7 @@
         cursor: pointer;
         font-size: 14px;
         border-radius: 5px;
-        transform: translateX(-60%);
+        transform: translateX(-20%);
         transition: margin-left 0.3s ease;
       }
 
@@ -255,8 +255,8 @@
       }
       #top-authors-container {
       margin-top: 20px;
-      width: 50%; /* Adjust as needed */
-      max-width: 800px; /* Adjust as needed */
+      width: 70%; /* Adjust as needed */
+      max-width: 900px; /* Adjust as needed */
       }
       #top-authors-list {
         list-style-type: none;
@@ -272,13 +272,13 @@
   <body>
     <div id="appbar">
       <div>
-        Authors links
+       Relaciones Autores
         <button
           id="toggle-popup-btn"
           onclick="togglePopup();"
           title="Toggle Popup"
         >
-          Show Stories
+          Ver Autor
         </button>
       </div>
       <div class="center-section">
@@ -290,14 +290,14 @@
           id="Stories-Authors-btn"
           title="Go to embeddings"
         >
-        See Only Stories Authors
+        Ver Autores de cuentos
       </button>
         <button
           onclick="window.location.href='/'"
           id="Embeddings-btn"
           title="Go to embeddings"
         >
-          See Story Embeddings
+        Ver Embeddings de Cuentos 
         </button>
       </div>
     </div>
@@ -309,13 +309,13 @@
     <div id="popup">
       <div id="search-container">
         <div class="dropdown">
-          <button class="dropbtn" id="filter-button" > Filter by Name</button>
+          <button class="dropbtn" id="filter-button" > Filtrar por Nombre</button>
           <div class="dropdown-content">
-            <span data-filter="id">Name</span>
-            <span data-filter="country">Country</span>
-            <span data-filter="birth_year">Birth Year</span>
-            <span data-filter="death_year">Death Year</span>
-            <span data-filter="genre">Genre</span>
+            <span data-filter="id">Nombre</span>
+            <span data-filter="country">País</span>
+            <span data-filter="birth_year">Año de nacimientos</span>
+            <span data-filter="death_year">Año de muerte</span>
+            <span data-filter="genre">Género</span>
           </div>
         </div>
         <input type="text" id="author-search" placeholder="Search for an author...">
@@ -323,9 +323,9 @@
         <div id="autocomplete-container"></div>
       </div>
       <div id="author-info-container">></div>
-      <button id="follow-author-btn">Follow Author</button>
+      <button id="follow-author-btn">Seguir Autor</button>
       <div id="top-authors-container">
-        <h3>Top 5 Linked Authors</h3>
+        <h3>Top 5 Autores relacionados</h3>
         <ul id="top-authors-list"></ul>
       </div>
     </div>
@@ -345,14 +345,14 @@
         if (popup.style.display === "none" || popup.style.display === "") {
           popup.style.display = "flex";
           popup.style.width = "25%;";
-          toggleLink.textContent = "Hide Stories";
+          toggleLink.textContent = "Ocultar Info Autor";
           container.style.width = "calc(100% - 25%)";
           container.style.marginLeft = "25%";
 
           loadAuthorInfo();
         } else {
           popup.style.display = "none";
-          toggleLink.textContent = "Show Stories";
+          toggleLink.textContent = "Mostrar información Autor";
           container.style.width = "100%";
           container.style.marginLeft = "0";
         }
@@ -459,7 +459,7 @@
         var popup = document.getElementById("popup");
         var container = document.getElementById("container");
         var toggleLink = document.getElementById("toggle-popup-btn");
-        toggleLink.textContent = "Hide Stories";
+        toggleLink.textContent = "Ocultar Info Autor";
         popup.style.display = "flex";
         container.style.marginLeft = "25%";
         container.style.width = "calc(100% - 25%)";
