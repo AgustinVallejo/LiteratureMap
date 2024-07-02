@@ -212,9 +212,9 @@ app.mount("/static", StaticFiles(directory="static", html=True), name="static")
 def get_author_page():
     return FileResponse(os.path.join("static", "authorToAuthor.html"))
 
-@app.get("/authorinfo")
-def get_author_page_info():
-    return HTMLResponse(content=open("static/author-info.html").read())
+# @app.get("/authorinfo")
+# def get_author_page_info():
+#     return HTMLResponse(content=open("static/author-info_small.html").read())
 
 
 @app.get("/authorToAuthor3D")
@@ -223,7 +223,7 @@ def get_author_page_3D():
 
 @app.get("/authorToAuthor3DSmall")
 def get_author_page_3D_small():
-    return FileResponse(os.path.join("static", "authorToAuthor3Dsmaller.html"))
+    return FileResponse(os.path.join("static", "authorToAuthor3DSmall.html"))
 # TODO
 # - Show the authors linked ranked by quantity on the left below the author summary
 # - Add a button to go back to the start

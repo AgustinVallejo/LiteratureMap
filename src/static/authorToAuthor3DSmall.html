@@ -152,11 +152,11 @@
         cursor: pointer;
         font-size: 14px;
         border-radius: 5px;
-        transform: translateX(-60%);
+        transform: translateX(-30%);
         transition: margin-left 0.3s ease;
       }
 
-      #Stories-Authors-btn {
+      #Stories-Authors-btn:hover {
         background-color: #0056b3;
       }
 
@@ -168,7 +168,7 @@
         cursor: pointer;
         font-size: 14px;
         border-radius: 5px;
-        transform: translateX(-60%);
+        transform: translateX(-20%);
         transition: margin-left 0.3s ease;
       }
 
@@ -286,11 +286,11 @@
       </div>
       <div>
         <button
-          onclick="window.location.href='/authorToAuthor3DSmall'"
+          onclick="window.location.href='/authorToAuthor3D'"
           id="Stories-Authors-btn"
           title="Go to embeddings"
         >
-        See Only Stories Authors
+        See All Authors
       </button>
         <button
           onclick="window.location.href='/'"
@@ -387,7 +387,7 @@
               );
             document.getElementById("author-info-container").innerHTML =
               rendered;
-            document.getElementById("popup-image").src = `/static/${author.image}`;
+            document.getElementById("popup-image").src = `/static/gifs/${author.image.replace('.png', '.gif')}`;
             document.getElementById("popup-audio").src = `/static/${author.audio}`;
             updateTopAuthors(author)
           })
@@ -467,7 +467,7 @@
 
       async function fetchJSON() {
         try {
-          const response = await fetch("static/authorLinksSmaller.json");
+          const response = await fetch("static/authorLinksSmallerShortCleaned.json");
           const gData = await response.json();
           return gData;
         } catch (error) {
